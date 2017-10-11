@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
+    <style>
+        body {
+            text-align: center;
+        }
+
+        video {
+            width: 550px;
+            height: 450px;
+            border: 1px solid black;
+        }
+
+        #vidwrap {
+            margin: 20px 0;
+        }
+
+        .merchant {
+            color: blue;
+        }
+        #start-camera, #take-pic, #add-receipt, #take-pic-cancel{
+            height: 3em;
+        }
+    </style>
+
+
+
+    <script>
+
+        var imageCapture;
+        var track;
+
+        function attachMediaStream(mediaStream) {
+            $('video')[0].srcObject = mediaStream;
+
+            // Saving the track allows us to capture a photo
+            track = mediaStream.getVideoTracks()[0];
+            imageCapture = new ImageCapture(track);
+        }
+
+        function startVideo() {
+            $('#vidwrap').css('display','block');
+            navigator.mediaDevices.getUserMedia({video: {facingMode: {exact: "environment"}}})
+                .then(attachMediaStream)
+                .catch(error => {
+                    navigator.mediaDevices.getUserMedia({video: true})
+                        .then(attachMediaStream)
+                        .catch(error => {
+                            console.log('you are fooked');
+                        })
+                })
+        }
+
+        function takeSnapshot() {
+            // create a CANVAS element that is same size as the image
+            $("#inputForm").css('display','block');
+            imageCapture.grabFrame()
+            .then(img => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                const base64EncodedImageData = canvas.toDataURL('image/png').split(',')[1];
+
+                $.ajax({
+                    url: "/images",
+                    type: "POST",
+                    data: base64EncodedImageData,
+                    contentType: "text/plain",
+                    success: function() {
+
+                        console.log("success")
+
+                    },
+               })
+                .then(response => {
+                    imageCapture = null;
+                    $('#vidwrap').css('display','none');
+                    $('video')[0].srcObject = null;
+                    track.stop();
+                    $('#merchant').val(response.merchantName);
+                    $('#amount').val(response.amount);
+//                    $('video').after(`<div>got response: <pre>${JSON.stringify(response)}</pre></div>`);
+                })
+                .always(() => console.log('request complete'));
+
+                // For debugging, you can uncomment this to see the frame that was captured
+//                 $('BODY').append(canvas);
+            });
+        }
+
+
+        function stopSnapshot () {
+            $('#vidwrap').css('display','none');
+            $('video')[0].srcObject = null;
+            track.stop();
+        }
+
+        $(function () {
+            $('#start-camera').on('click', startVideo);
+            $('video').on('play', () => $('#take-pic').prop('disabled', false));
+            $('video').on('play', () => $('#take-pic-cancel').prop('disabled', false));
+            $('#take-pic').on('click', takeSnapshot);
+            $('#take-pic-cancel').on('click', stopSnapshot);
+        });
+
+
+//        $('#add-receipt').hide()
+        // This is the idiomatic way to ensure that JQuery does not
+        // execute until the page has loaded
+        function loadReceipts(loadTagsForAllReceipts){
+            const api = ""; // <- do not need a root api URL if this page is served directly by the API
+            $.getJSON(api+"/receipts", function(receipts){
+                $('#receiptList').html('');
+
+                for(var i=0; i < receipts.length; i++) {
+                    var receipt = receipts[i];
+
+                    $(`<div class ="receipt row"><div class= "col">${receipt.created}</div><div class= "col merchant">${receipt.merchantName}</div><div class= "col amount">${receipt.value}</div><div id="${receipt.id}" class= "col tags"><button  class = "add-tag" type="button" onclick="getTagName('${receipt.id}',addTags)">Tags</button></div></div>`)
+                        .appendTo($("#receiptList"));
+
+
+                }
+//                loadTagsForAllReceipts()
+            })
+        }
+
+        function loadTagsForAllReceipts(){
+//            (addTags)
+        }
+
+        function getTagName (receiptid, callbackFunction){
+            $( "#"+receiptid ).append("<input id ='tag' class= 'tag_input' placeholder='TagName'>")
+            $( "#tag").on('keyup', function (key_input){
+                if (key_input.keyCode == 13){
+                    tag_value=$( "#tag").val()
+                    receipt_id =receiptid
+                    $( "#tag" ).remove()
+                    $.ajax({
+                        type: "PUT",
+                        url: "/tags/" + tag_value,
+                        data: receiptid,
+                        dataType:"json",
+                        contentType: "application/json",
+
+                        success: function(){
+                            $( "#"+receiptid ).remove(".tag_input");
+
+                            callbackFunction(receiptid,tag_value)
+                        }
+                    });
+                }
+            })
+
+        }
+
+        function addTags(receiptid,tag_value) {
+            var tempid = "temp"+receipt_id
+            $( "#"+receiptid ).append("<p onclick= 'removeTag(receipt_id,tag_value,this)' class ='tagValue' id =" + tempid +"> "+tag_value+"</p>")
+        }
+
+        function removeTag(receiptid,tag_value,that){
+            $.ajax({
+                type: "PUT",
+                url: "/tags/" + tag_value,
+                data: receiptid,
+                dataType:"json",
+                contentType: "application/json",
+
+                success: function(){
+                    $(that).remove();
+
+                }
+
+            });
+        }
+
+        function clearFieldHide() {
+            $("#merchant").val('');
+            $("#amount").val('');
+            $("#inputForm").hide();
+        }
+
+        function toggleInputField() {
+            $("#inputForm").toggle();
+        }
+
+
+        function clearField() {
+            $("#merchant").val('');
+            $("#amount").val('');
+        }
+
+        function save(callbackFunction) {
+            var data = { "merchant": $("#merchant").val(), "amount": $("#amount").val()}
+            $.ajax({
+                type: 'POST',
+                url: '/receipts',
+                data: JSON.stringify(data),
+                success: function(data) {},
+                contentType: "application/json",
+                dataType: 'json',
+
+                success: function(){
+                    clearField()
+                    callbackFunction()
+
+                }
+            });
+
+        }
+
+        loadReceipts()
+
+
+    </script>
+</head>
+
+<body>
+
+<DIV id="container">
+    <h1>My receipts</h1>
+
+    <button class="btn btn-success" id="add-receipt" onclick="toggleInputField()">Add Receipt</button>
+<!--     <div class="button" id="add-receipt">+</div>
+ -->    
+    <button id="start-camera" class="btn btn-success">Start Video</button>
+
+
+    <br>
+    <div id="vidwrap" style="display:none;">
+        <video autoplay></video>
+        <br>
+        <button id="take-pic" class="btn btn-success" disabled="true">Take a Snapshot!</button>
+        <button id="take-pic-cancel" class="btn btn-warning" disabled="true">Cancel</button>
+    </div>
+    <div>
+
+        <div id="inputForm" style="display:none;">
+            <br>
+            <div class="input-group">
+                <div class="col"></div>
+                <input id = "merchant" type="text" class="form-control" placeholder="Merchant">
+                <div class="col"></div>
+            </div>
+            <br>
+            <div class="input-group">
+                <div class="col"></div>
+                <input id = "amount" type="text" class="form-control" placeholder="Amount">
+                <div class="col"></div>
+            </div>
+            <br>
+
+            <div style="text-align:center">
+                <button id ="save-receipt" onclick ="save(loadReceipts)">save</button>
+                <button id ="cancel-receipt" onclick="clearFieldHide()">cancel</button>
+            </div>
+            <br>
+            <br>
+        </div>
+
+        <div class="row border-bottom" >
+            <div class="col">Time</div>
+            <div class="col border-left">Merchant</div>
+            <div class="col border-left">$</div>
+            <div class="col border-left">Tags</div>
+        </div>
+
+        <div id="receiptList">
+
+        </div>
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+
+</DIV>
+</body>
+</html>

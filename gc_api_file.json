@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "vertical-vault-181717",
+  "private_key_id": "e982ac793907b5c1aabaded9aaec336eefda23ec",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCao8a2CUx0Qcbp\nB0DcTTaR3Z8P8sN9TWzUhvV2/GHh68POQvYX9ADRFflDoQSznuI87IFCY/dW/twi\ngL0Zq3IUzIUXo9RX+i7rg1xsr9AFi6kdloTOTxA/WJiDdlzhDJ/6hXeLX3d1lhhs\n0xvNnH0Jfhh+nTX77fa2yt3WTk6+k0bYwj7ll+wKm3Olthv1/712Gs+dm2yAR2li\nqPxA4ugHJxkgkPC3ROtWNyBHh5d+Nq6KHmBtIAgMxtIsTXrPA+IMo8kwXahOT/cK\nG2TemkuS2eg7bv5Ero8HwcjYmH7Nqf35ksH3dA9+a2olCu+zfimNfC5Wsg9N0dX7\n0ePUq88NAgMBAAECggEABe5Yi/LSjXYlL7R16f0sJdWrz1Jh6eEzI2BpwCTxIoq5\n+XDbPEZau0PUfTuK92viN+P6SsmUWv0IN53CCV7Oz7o1M8rpm6ME2a0xuX/X9d59\nbGnksUtnAob4LB9sc7umoL0tvWXtkJz8VgnJLzTcg6V9p9C8mVHVljBoG1tPIEM5\nvZi5/o512BeduiiJYPYqmQi668NioUZI2Z0NXyoCKxcNJGJXXLTp2rvxFXBYTWgy\nrMTRPZJ+dspNK22OwbeSomdVktflkLYk5gheimPuE2MGc1HXK5IETB6aJM85RfHC\nlXQRbNJihWpCxRa14tPLkcu/Z1mCN/a4hG/Jk5JGIQKBgQDNbQI9N14GQ9fjZPXm\nzPInGbQvvjpkZzBIjLXHLnzfNdIhwgpRcctAvuoCNwLQ6p2OWMp5fPiADAt7Wh5u\nF2HTe4/SW2JFGf/EVqzw/xYrkgLs7hrntpklbHBBKnLnXqm9JhWUOshF9XHofcye\nUI+3DZE22Oaj/jwK9rfy+meJcwKBgQDAtffw+CknbmA4kPAU5+sBLUtVmNRnRvM5\nnXSyHd5SR4MO+TisuwSmOic/0XkcMXL8fSchMe7mtgVn1iSPpJMcYSHRSzfNOaOM\nOdIKUvYlH9oNuK9qFoSPcFRQat7m6tzWqRhstZoXnDR6D4u+aKBkkWxkhIu1JE6I\nigpWMYslfwKBgQCF5LM860Whl76zPC76zEJZMeu74qV0o71YzD3/IVHKuu3Hiw3m\nn+D2xnkIEIsJWKJxEXaHUOk3rKIfOFH1N9BPY44OcfnPSG7orgXy3pC4vWaiv19S\nADY5qkBQeTaDj7Pa0WPnRZkb4CrqenRQC/pgObuYoC9UXHUOQFkNSiEJ+QKBgHn0\n7xN1yX2l0Yka2IUyfDwDcTCbhphRg23L4uUyF9eUYDGisSZHONsF5H7zzyRzeuSl\nQ5UzZ5BkUylykTLCoUMNiXxNkOP0/TaqBO35sMKv1KxoW8LUu1GXchRufeA/dED5\nRHbPutQETAWPPw3iYtciXSmD5HJfpr+sNHx14Cx7AoGBAKjxG+t+I6YO+gGyBUJW\ndGEYer6Ediz+7GiGXYDtTnkqab18Dc7DAoxth34NjWqZnvIgAnPgKtJu6l2W/k51\nvcnvflFAwga0J534X1lTPleV4q0KgUSFOtAsPlPJn8qnIVmzzW/vaAyD8hnc10fq\nFt39NPJ8GPnZPWZV+Niw5IEp\n-----END PRIVATE KEY-----\n",
+  "client_email": "gv-service-account@vertical-vault-181717.iam.gserviceaccount.com",
+  "client_id": "118316242785028104758",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gv-service-account%40vertical-vault-181717.iam.gserviceaccount.com"
+}
